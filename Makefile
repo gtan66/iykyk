@@ -6,39 +6,39 @@ help:  ## Show this help message
 	@echo 'Available targets:'
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-20s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-install:  ## Install dependencies with Poetry
-	poetry install
+install:  ## Install dependencies with uv
+	uv sync
 
 dev:  ## Run development server with auto-reload
-	poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+	uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 test:  ## Run tests with coverage
-	poetry run pytest --cov=app --cov-report=term-missing --cov-report=html
+	uv run pytest --cov=app --cov-report=term-missing --cov-report=html
 
 test-watch:  ## Run tests in watch mode
-	poetry run pytest-watch
+	uv run pytest-watch
 
 lint:  ## Run linting checks
-	poetry run ruff check src/ tests/
+	uv run ruff check src/ tests/
 
 format:  ## Format code with Ruff
-	poetry run ruff format src/ tests/
-	poetry run ruff check --fix src/ tests/
+	uv run ruff format src/ tests/
+	uv run ruff check --fix src/ tests/
 
 type-check:  ## Run type checking with Mypy
-	poetry run mypy src/
+	uv run mypy src/
 
 quality:  ## Run all quality checks (lint, format-check, type-check, test)
-	poetry run ruff check src/ tests/
-	poetry run ruff format --check src/ tests/
-	poetry run mypy src/
-	poetry run pytest --cov=app
+	uv run ruff check src/ tests/
+	uv run ruff format --check src/ tests/
+	uv run mypy src/
+	uv run pytest --cov=app
 
 pre-commit-install:  ## Install pre-commit hooks
-	poetry run pre-commit install
+	uv run pre-commit install
 
 pre-commit:  ## Run pre-commit hooks on all files
-	poetry run pre-commit run --all-files
+	uv run pre-commit run --all-files
 
 clean:  ## Clean up generated files
 	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true

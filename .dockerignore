@@ -50,5 +50,5 @@ Dockerfile
 docker-compose.yml
 .dockerignore
 
-# Poetry
-poetry.lock
+# UV cache
+.uv_cache/

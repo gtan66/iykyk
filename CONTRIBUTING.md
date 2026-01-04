@@ -22,10 +22,10 @@ Be respectful and constructive in all interactions.
 
 ```bash
 # Install dependencies
-poetry install
+uv sync
 
 # Install pre-commit hooks
-poetry run pre-commit install
+uv run pre-commit install
 
 # Copy environment file
 cp .env.example .env

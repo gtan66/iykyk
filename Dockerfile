@@ -3,21 +3,19 @@ FROM python:3.11-slim as builder
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+    PYTHONDONTWRITEBYTECODE=1
 
-# Install poetry
-RUN pip install poetry==1.7.1
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 # Set working directory
 WORKDIR /app
 
 # Copy dependency files
-COPY pyproject.toml poetry.lock* ./
+COPY pyproject.toml uv.lock* ./
 
-# Export dependencies to requirements.txt (for faster docker builds)
-RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
+# Install dependencies
+RUN uv sync --frozen --no-dev --no-install-project
 
 # Production stage
 FROM python:3.11-slim
@@ -25,7 +23,10 @@ FROM python:3.11-slim
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1
+    PATH="/app/.venv/bin:$PATH"
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 # Create non-root user
 RUN useradd -m -u 1000 appuser && \
@@ -34,11 +35,8 @@ RUN useradd -m -u 1000 appuser && \
 
 WORKDIR /app
 
-# Copy requirements from builder
-COPY --from=builder /app/requirements.txt .
-
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy virtual environment from builder
+COPY --from=builder /app/.venv /app/.venv
 
 # Copy application code
 COPY --chown=appuser:appuser src/ ./src/

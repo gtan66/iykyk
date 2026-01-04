@@ -51,6 +51,9 @@ dmypy.json
 # Linting
 .ruff_cache/
 
+# UV
+.uv_cache/
+
 # IDEs
 .vscode/
 .idea/

@@ -11,7 +11,7 @@ A modern Python web application built with FastAPI and best practices for produc
 - **Pre-commit Hooks** - Automated code quality checks
 - **Docker** - Production-ready containerization
 - **CI/CD** - GitHub Actions for automated testing and deployment
-- **Dependency Management** - Poetry for reliable package management
+- **Dependency Management** - UV for blazing-fast package management
 - **Security** - Best practices including non-root Docker user, security scanning
 
 ## Project Structure
@@ -30,14 +30,14 @@ iykyk/
 │   └── workflows/         # CI/CD workflows
 ├── Dockerfile             # Docker configuration
 ├── docker-compose.yml     # Docker Compose setup
-├── pyproject.toml         # Poetry dependencies and tool config
+├── pyproject.toml         # Project dependencies and tool config
 └── README.md
 ```
 
 ## Requirements
 
 - Python 3.11+
-- Poetry (for dependency management)
+- UV (for dependency management)
 - Docker (optional, for containerization)
 
 ## Quick Start
@@ -49,14 +49,14 @@ git clone <repository-url>
 cd iykyk
 ```
 
-### 2. Install dependencies with Poetry
+### 2. Install dependencies with UV
 
 ```bash
-# Install Poetry if you haven't already
-curl -sSL https://install.python-poetry.org | python3 -
+# Install UV if you haven't already
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install project dependencies
-poetry install
+uv sync
 ```
 
 ### 3. Set up environment variables
@@ -70,10 +70,10 @@ cp .env.example .env
 
 ```bash
 # Development mode with auto-reload
-poetry run uvicorn app.main:app --reload
+uv run uvicorn app.main:app --reload
 
-# Or use the Poetry script
-poetry run dev
+# Or use the Makefile
+make dev
 ```
 
 The API will be available at:
@@ -87,36 +87,36 @@ The API will be available at:
 
 ```bash
 # Run all tests with coverage
-poetry run pytest
+uv run pytest
 
 # Run with verbose output
-poetry run pytest -v
+uv run pytest -v
 
 # Run specific test file
-poetry run pytest tests/test_users.py
+uv run pytest tests/test_users.py
 ```
 
 ### Code Quality
 
 ```bash
 # Lint with Ruff
-poetry run ruff check src/ tests/
+uv run ruff check src/ tests/
 
 # Format code with Ruff
-poetry run ruff format src/ tests/
+uv run ruff format src/ tests/
 
 # Type check with Mypy
-poetry run mypy src/
+uv run mypy src/
 ```
 
 ### Pre-commit Hooks
 
 ```bash
 # Install pre-commit hooks
-poetry run pre-commit install
+uv run pre-commit install
 
 # Run hooks manually
-poetry run pre-commit run --all-files
+uv run pre-commit run --all-files
 ```
 
 ## Docker
@@ -212,7 +212,7 @@ The project uses Pytest with the following features:
 Run tests with coverage:
 
 ```bash
-poetry run pytest --cov=app --cov-report=html
+uv run pytest --cov=app --cov-report=html
 ```
 
 View coverage report:
@@ -268,7 +268,7 @@ GitHub Actions workflows include:
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
-4. Run tests and linting (`poetry run pytest && poetry run ruff check .`)
+4. Run tests and linting (`make quality` or `uv run pytest && uv run ruff check .`)
 5. Commit your changes (`git commit -m 'Add amazing feature'`)
 6. Push to the branch (`git push origin feature/amazing-feature`)
 7. Open a Pull Request
